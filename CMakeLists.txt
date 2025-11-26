@@ -21,7 +21,7 @@ endif()
 
 add_subdirectory($ENV{GEODE_SDK} ${CMAKE_CURRENT_BINARY_DIR}/geode)
 
-CPMAddPackage("gh:camila314/camila-utils#d66de74")
+CPMAddPackage("gh:camila314/camila-utils#400affb")
 target_link_libraries(${PROJECT_NAME} camila-utils)
 
 setup_geode_mod(${PROJECT_NAME})
