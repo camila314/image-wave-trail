@@ -1,6 +1,5 @@
 #include <Geode/Geode.hpp>
 #include <Geode/modify/PlayerObject.hpp>
-#include <Geode/utils/VMTHookManager.hpp>
 
 #include <camila/utils.hpp>
 
@@ -110,7 +109,7 @@ class $modify(PlayerObject) {
 			for (auto child : {children[0], children.begin()[1]}) {
 				float worldX = m_fields->m_newStreak->convertToWorldSpace(child->getPosition()).x;
 
-				if (worldX < -child->getContentWidth())
+				if (worldX < -child->getScaledContentWidth())
 					child->removeFromParent();
 			}
 		}
