@@ -39,8 +39,10 @@ class StreakClip : public CCClippingNode {
 class $modify(PlayerObject) {
 	struct Fields {
 		StreakClip* m_newStreak = nullptr;
+
 		float m_cachedAngle = 0;
 		float m_cachedTime = 0;
+		CCPoint m_cachedPos = CCPointZero;
 	};
 
 	bool init(int player, int ship, GJBaseGameLayer* gameLayer, cocos2d::CCLayer* layer, bool playLayer) {
@@ -66,9 +68,11 @@ class $modify(PlayerObject) {
 		spr->setPosition(pos);
 		spr->setScale(camila::Setting<"trail-size", float>()->get() / spr->getContentHeight());
 
-		m_waveTrail->m_waveSize = spr->getScaledContentHeight() / 12.;
+		m_waveTrail->m_waveSize = spr->getScaledContentHeight() / 10.;
 
 		m_fields->m_newStreak->addChild(spr);
+
+		m_fields->m_cachedPos = getPosition();
 		return spr;
 	}
 
@@ -81,6 +85,7 @@ class $modify(PlayerObject) {
 			}
 
 			m_fields->m_cachedTime = pl->m_gameState.m_levelTime;
+			m_fields->m_cachedPos = getPosition();
 		}
 	}
 
@@ -88,22 +93,28 @@ class $modify(PlayerObject) {
 		if (*camila::Setting<"no-pulse">())
 			m_waveTrail->m_pulseSize = 1.5;
 
-		auto angle = (m_lastPosition - m_position).getAngle();
-		bool changeAngle = fabs(angle - m_fields->m_cachedAngle) > 0.001 && m_lastPosition != m_position;		
+		auto diff = getPosition() - m_fields->m_cachedPos;
+		diff.x = fabs(diff.x);
+		auto angle = (diff).getAngle();
+
+		bool changeAngle = fabs(angle - m_fields->m_cachedAngle) > 0.001 && m_fields->m_cachedPos != getPosition();		
 
 		if (auto lastItem = static_cast<CCNode*>(m_fields->m_newStreak->getChildren()->lastObject())) {
-			if (changeAngle || (ccpDistance(lastItem->getPosition(), getPosition()) >= lastItem->getScaledContentSize().width)) {
+			if (changeAngle || (ccpDistance(lastItem->getPosition(), getPosition() /*- ccp(0, 105)*/) >= lastItem->getScaledContentSize().width)) {
 				auto lastPos = lastItem->getPosition();
 				auto width = lastItem->getScaledContentSize().width;
 				auto angle = m_fields->m_cachedAngle;
 
-				CCPoint newPos = lastPos + CCPoint(cosf(angle), sinf(angle)) * width;
+				CCPoint newPos = lastPos + CCPoint(fabs(cosf(angle)), sinf(angle)) * width;
 				newStreak(newPos, lastItem->getRotation());
+
+				log::info("new streak at {}. player pos: {}", newPos, getPosition());
 			}
 		}
 
 		if (changeAngle) {
 			m_fields->m_cachedAngle = angle;
+			log::info("new angle");
 			newStreak(getPosition(), -angle * (180. / 3.14159));
 		}
 
@@ -111,12 +122,13 @@ class $modify(PlayerObject) {
 			m_fields->m_newStreak->removeAllChildren();
 		}
 
-		if (auto children = m_fields->m_newStreak->getChildrenExt<CCSprite>(); children.size() > 1) {
-			auto child = *children.begin();
-			float worldX = m_fields->m_newStreak->convertToWorldSpace(child->getPosition()).x;
+		if (auto children = m_fields->m_newStreak->getChildrenExt<CCSprite>(); children.size() > 2) {
+			for (auto child : {children[0], children.begin()[1]}) {
+				float worldX = m_fields->m_newStreak->convertToWorldSpace(child->getPosition()).x;
 
-			if (worldX < -child->getContentWidth())
-				child->removeFromParent();
+				if (worldX < -child->getContentWidth())
+					child->removeFromParent();
+			}
 		}
 	}
 };
