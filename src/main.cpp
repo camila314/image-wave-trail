@@ -66,8 +66,13 @@ class $modify(PlayerObject) {
 		PlayerObject::update(dt);
 
 		if (auto pl = PlayLayer::get()) {
-			if (m_isDart) {
-				updateNewStreak();			
+			if (m_fields->m_newStreak) {
+				if (this != pl->m_player1 && this != pl->m_player2) {
+					m_fields->m_newStreak->removeFromParent();
+					m_fields->m_newStreak = nullptr;
+				} else if (m_isDart) {
+					updateNewStreak();			
+				}
 			}
 
 			m_fields->m_cachedTime = pl->m_gameState.m_levelTime;
