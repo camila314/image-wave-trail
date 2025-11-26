@@ -1,0 +1,39 @@
+{
+	"geode": "4.10.0",
+	"gd": {
+		"win": "2.2074",
+		"android": "2.2074",
+		"mac": "2.2074",
+		"ios": "2.2074"
+	},
+	"id": "camila314.image_wave_trail",
+	"name": "Image Wave Trail",
+	"version": "v1.0.0",
+	"developer": "camila314",
+	"description": "Set your wave trail to an image",
+	"settings": {
+    	"wave-image": {
+    		"name": "Wave Trail Image",
+	    	"description": "Wave trail image. The recommended size is 32x32.",
+	    	"type": "file",
+	    	"default": "None Selected"
+  		},
+  		"no-pulse": {
+  			"name": "Disable Pulse",
+  			"description": "Make the wave image not pulse",
+  			"type": "bool",
+  			"default": true
+  		},
+  		"trail-size": {
+  			"name": "Wave Trail Size",
+  			"description": "How big/small you want the image wave trail",
+  			"type": "float",
+  			"default": 27.0,
+  			"min": 1.0,
+  			"max": 50.0,
+  			"control": {
+  			    "slider": true
+  			}
+  		}
+	}
+}
