@@ -8,7 +8,7 @@
 	},
 	"id": "camila314.image_wave_trail",
 	"name": "Image Wave Trail",
-	"version": "v1.0.0",
+	"version": "v1.0.1",
 	"developer": "camila314",
 	"description": "Set your wave trail to an image",
 	"settings": {
@@ -34,6 +34,12 @@
   			"control": {
   			    "slider": true
   			}
+  		},
+  		"use-player-color": {
+  			"name": "Use Player Color",
+  			"description": "Color the image to the player's color",
+  			"type": "bool",
+  			"default": false
   		}
 	}
 }

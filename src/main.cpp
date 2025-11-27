@@ -54,6 +54,10 @@ class $modify(PlayerObject) {
 		spr->setPosition(pos);
 		spr->setScale(camila::Setting<"trail-size", float>()->get() / spr->getContentHeight());
 
+		if (*camila::Setting<"use-player-color">()) {
+			spr->setColor(m_waveTrail->getColor());
+		}
+
 		m_waveTrail->m_waveSize = spr->getScaledContentHeight() / 10.;
 
 		m_fields->m_newStreak->addChild(spr);
